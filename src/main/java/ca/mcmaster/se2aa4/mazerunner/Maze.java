@@ -1,11 +1,24 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
 public class Maze{
+
+    private static Maze instance;
+
     private char[][] maze;
     private Position leftEntry;
     private Position rightEntry;
 
-    public Maze(char[][] maze){
+    private Maze(){
+    }
+
+    public static Maze getInstance(){
+        if(instance == null){
+            instance = new Maze();
+        }
+        return instance;
+    }
+
+    public void initialize(char[][] maze){
         this.maze = maze;
         findEntry();
     }

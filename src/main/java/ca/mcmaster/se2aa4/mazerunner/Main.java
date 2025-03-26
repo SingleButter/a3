@@ -31,11 +31,9 @@ public class Main {
 
                 //checking -p flag
                 if(cmd.hasOption("p")){
-                    Runner aRun = new Runner(maze);
-                    aRun.validationPath(cmd.getOptionValue("p"));
+                    Runner.getInstance().validationPath(cmd.getOptionValue("p"), maze);
                 }else{
-                    Runner otherRun = new Runner(maze);
-                    otherRun.rightHandPathFinder();
+                    Runner.getInstance().findPath(maze);
                 }
             }
         } catch(Exception e) {

@@ -6,15 +6,24 @@ import java.nio.file.Paths;
 import java.io.IOException;
 
 public class Runner{
-    private Maze aMaze;
 
-    public Runner(char[][] aMaze){
-        this.aMaze = new Maze(aMaze);
+    private static Runner instance;
+
+    private Runner(){
+    }
+
+    public static Runner getInstance(){
+        if(instance == null){
+            instance = new Runner();
+        }
+        return instance;
     }
 
     //validate whether the path is correct
-    public void validationPath(String aPath) {
+    public void validationPath(String aPath, char[][] maze) {
         try {
+            Maze aMaze = Maze.getInstance();
+            aMaze.initialize(maze);
             String path = toCanonical(aPath);
             Cursor.getInstance().initialize(aMaze, new Position(0, 0), Direction.RIGHT);
             PathValidation pathValidation = new PathValidation(aMaze, Cursor.getInstance());
@@ -30,33 +39,21 @@ public class Runner{
         }
     }
 
-    public void rightHandPathFinder(){
+    public void findPath(char[][] maze){
         try {
+            Maze aMaze = Maze.getInstance();
+            aMaze.initialize(maze);
+            PathRecorder pathRecorder = new PathRecorder();
+            Cursor.getInstance().addObserver(pathRecorder);
             Cursor.getInstance().initialize(aMaze, new Position(0, 0), Direction.RIGHT);
             FindingPath finder = new RightHandFinder(aMaze, Cursor.getInstance());
-            System.out.println(toFactorized(finder.findPath()));
+            finder.findPath();
+            System.out.println(pathRecorder.getFactorizedPath());
         }catch(NullPointerException e){
             System.out.println("Null pointer exception" + e.getMessage());
         }
     }
 
-    public String toFactorized(String path){
-        int index = 0;
-        String str = "";
-        while(index < path.length()){
-            int numSame = 0;
-            for(int i = index; i < path.length(); i++){
-                if(path.charAt(index) != path.charAt(i)){
-                    break;
-                }else{
-                    numSame++;
-                }
-            }
-            str += numSame +""+ path.charAt(index);
-            index += numSame;
-        }
-        return str;
-    }
 
     public String toCanonical(String path){
         String str = "";
